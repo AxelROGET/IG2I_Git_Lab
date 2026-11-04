@@ -1,0 +1,35 @@
+From ea214034f30c039c09e3d1b6964c060813b2ddc9 Mon Sep 17 00:00:00 2001
+From: Axel <axel@example.fr>
+Date: Wed, 4 Mar 2026 12:13:00 +0000
+Subject: [PATCH] adding category property to transactions
+
+---
+ app.py | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/app.py b/app.py
+index 6537c40..e2c4a0b 100755
+--- a/app.py
++++ b/app.py
+@@ -107,6 +107,7 @@ def post_transaction():
+     amount = data['montant']
+     author_id = data['user_author']
+     beneficiary_id = data['user_beneficiary']
++    category = data['category'] if 'category' in data else None
+ 
+     # Vérification des droits : Soit auteur, soit admin
+     if current_user_id != author_id and not claims.get("is_admin"):
+@@ -126,8 +127,8 @@ def post_transaction():
+ 
+         # 3. Enregistrement du log
+         cur.execute(
+-            "INSERT INTO transactions (amount, author_id, beneficiary_id) VALUES (%s, %s, %s)",
+-            (amount, author_id, beneficiary_id)
++            "INSERT INTO transactions (amount, author_id, beneficiary_id, category) VALUES (%s, %s, %s, %s)",
++            (amount, author_id, beneficiary_id, category)
+         )
+         conn.commit()
+         return jsonify({"msg": "Transaction réussie"}), 201
+-- 
+2.52.0
+

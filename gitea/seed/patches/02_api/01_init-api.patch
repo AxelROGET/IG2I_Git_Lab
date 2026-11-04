@@ -1,0 +1,99 @@
+From 27bff561ef163bc82ed155bb6b11dff5a65a8b6d Mon Sep 17 00:00:00 2001
+From: Emeline <emeline@example.fr>
+Date: Sat, 28 Feb 2026 11:25:25 +0000
+Subject: [PATCH] init api
+
+---
+ .env.example |  5 ++++
+ app.py       | 65 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 70 insertions(+)
+ create mode 100755 .env.example
+ create mode 100755 app.py
+
+diff --git a/.env.example b/.env.example
+new file mode 100755
+index 0000000..d8141d2
+--- /dev/null
++++ b/.env.example
+@@ -0,0 +1,5 @@
++JWT_SECRET_KEY=
++POSTGRES_HOST=
++POSTGRES_DB=
++POSTGRES_USER=
++POSTGRES_PASSWORD=
+\ No newline at end of file
+diff --git a/app.py b/app.py
+new file mode 100755
+index 0000000..e16a7dc
+--- /dev/null
++++ b/app.py
+@@ -0,0 +1,65 @@
++import os
++from dotenv import load_dotenv
++from datetime import timedelta
++from flask import Flask, request, jsonify
++from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, get_jwt
++import psycopg2
++from psycopg2.extras import RealDictCursor
++import bcrypt
++
++load_dotenv()
++
++app = Flask(__name__)
++
++# Configuration
++app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "secret-key")
++app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
++jwt = JWTManager(app)
++
++print(f"HOST : {os.getenv("POSTGRES_HOST")}, DB : {os.getenv("POSTGRES_DB")}, USER : {os.getenv("POSTGRES_USER")}, PASSWORD : {os.getenv("POSTGRES_PASSWORD")}")
++
++# Connexion DB
++def get_db_connection():
++    return psycopg2.connect(
++        host=os.getenv("POSTGRES_HOST"), 
++        database=os.getenv("POSTGRES_DB"),
++        user=os.getenv("POSTGRES_USER"),
++        password=os.getenv("POSTGRES_PASSWORD"),
++        cursor_factory=RealDictCursor
++    )
++
++# --- ROUTES ---
++
++# --- ADMIN ENDPOINT WITHOUT BEING LOGGED IN (DEV) ---
++@app.route('/api/dev/users', methods=['POST'])
++def dev_create_user():
++    return True
++
++# --- PROD ENDPOINTS ---
++
++@app.route('/api/login', methods=['POST'])
++def login():
++    return True
++
++@app.route('/api/users', methods=['POST'])
++@jwt_required()
++def create_user():
++    return True
++
++@app.route('/api/transactions', methods=['POST'])
++@jwt_required()
++def post_transaction():
++    return True
++
++@app.route('/api/transactions/author/<int:user_id>', methods=['GET'])
++@jwt_required()
++def get_author_transactions(user_id):
++    return True
++
++@app.route('/api/transactions/beneficiary/<int:user_id>', methods=['GET'])
++@jwt_required()
++def get_beneficiary_transactions(user_id):
++    return True
++
++if __name__ == '__main__':
++    app.run(host='0.0.0.0', port=5000)
+\ No newline at end of file
+-- 
+2.52.0
+

@@ -1,0 +1,20 @@
+From af8fa7968b689f9eba4fd93dec1d6e991a0fc74e Mon Sep 17 00:00:00 2001
+From: Sarah <sarah@example.fr>
+Date: Sat, 28 Feb 2026 11:25:25 +0000
+Subject: [PATCH] adding .gitignore
+
+---
+ .gitignore | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 .gitignore
+
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..4c49bd7
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1 @@
++.env
+-- 
+2.52.0
+

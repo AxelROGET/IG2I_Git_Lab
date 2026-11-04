@@ -1,0 +1,24 @@
+From a7d2b8ce20703799ceec09756aebbbe89e08f797 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?L=C3=A9a?= <lea@example.fr>
+Date: Sat, 28 Feb 2026 11:25:25 +0000
+Subject: [PATCH] configuration
+
+---
+ .env | 5 +++++
+ 1 file changed, 5 insertions(+)
+ create mode 100755 .env
+
+diff --git a/.env b/.env
+new file mode 100755
+index 0000000..d5ac44c
+--- /dev/null
++++ b/.env
+@@ -0,0 +1,5 @@
++JWT_SECRET_KEY=lwCrxPrpqUvhpetzDgyLTnNlyOiGrjtrbPIDfKDQshWjOqTQWX
++POSTGRES_HOST=db-dev
++POSTGRES_DB=pinf_dev
++POSTGRES_USER=pinf_dev
++POSTGRES_PASSWORD=bwFhmNvMBhsVHWoEPovZOQFlUlanPbXgQMSIuKvI
+-- 
+2.52.0
+

@@ -1,0 +1,65 @@
+# TP Git - IG2I : un serveur Gitea (équivalent de GitHub) + une machine de développement Linux.
+#
+#   docker compose up -d --build --wait     # premier lancement (build + configuration automatique)
+#   docker compose down -v                  # RESET COMPLET du TP (supprime serveur ET machine Linux)
+name: ig2i-git-lab
+
+services:
+  gitea:
+    build: ./gitea
+    image: ig2i/git-lab-gitea:1
+    container_name: gitea_server
+    hostname: gitea
+    restart: unless-stopped
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - TZ=Europe/Paris
+      # --- installation automatique (pas d'assistant web) ---
+      - GITEA__security__INSTALL_LOCK=true
+      - GITEA__security__SECRET_KEY=ig2i-git-lab-secret-key-not-for-production
+      - GITEA__database__DB_TYPE=sqlite3
+      - GITEA__server__DOMAIN=localhost
+      - GITEA__server__ROOT_URL=http://localhost:3000/
+      - GITEA__server__SSH_DOMAIN=gitea        # => URL de clone affichée : git@gitea:ig2i_dev/pinf.git
+      - GITEA__server__SSH_PORT=22
+      - GITEA__server__OFFLINE_MODE=true
+      - GITEA__repository__DEFAULT_BRANCH=main
+      - GITEA__service__DISABLE_REGISTRATION=true
+      - GITEA__actions__ENABLED=false
+      - GITEA__picture__DISABLE_GRAVATAR=true
+      - GITEA__log__LEVEL=Warn
+    volumes:
+      - gitea_data:/data
+    ports:
+      - "127.0.0.1:3000:3000"      # interface web, accessible uniquement depuis votre machine
+    healthcheck:
+      # "healthy" seulement quand Gitea répond ET que le bootstrap (utilisateur, dépôt) est terminé
+      test: ["CMD-SHELL", "test -f /data/.lab_ready && curl -fsS http://localhost:3000/api/healthz >/dev/null"]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 10s
+
+  linux:
+    build:
+      context: ./linux
+      args:
+        CODE_SERVER_VERSION: ""      # "" = dernière version ; ex. "4.96.4" pour figer
+    image: ig2i/git-lab-linux:1
+    container_name: linux
+    hostname: linux
+    restart: unless-stopped
+    depends_on:
+      gitea:
+        condition: service_healthy
+    environment:
+      - TZ=Europe/Paris
+    volumes:
+      - linux_home:/home/dev        # clés SSH, dépôt cloné, réglages VS Code
+    ports:
+      - "127.0.0.1:8080:8080"      # VS Code dans le navigateur (sans mot de passe : local uniquement)
+
+volumes:
+  gitea_data:
+  linux_home:

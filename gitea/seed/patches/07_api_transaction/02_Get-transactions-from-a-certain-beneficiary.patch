@@ -1,0 +1,35 @@
+From 6b10b8c1e28d3816c142c09ad412f018ec327a21 Mon Sep 17 00:00:00 2001
+From: Sarah <sarah@example.fr>
+Date: Sat, 28 Feb 2026 16:00:01 +0000
+Subject: [PATCH] Get transactions from a certain beneficiary
+
+---
+ app.py | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/app.py b/app.py
+index 515e4d0..fb188b9 100755
+--- a/app.py
++++ b/app.py
+@@ -86,7 +86,16 @@ def get_author_transactions(user_id):
+ @app.route('/api/transactions/beneficiary/<int:user_id>', methods=['GET'])
+ @jwt_required()
+ def get_beneficiary_transactions(user_id):
+-    return True
++    if int(get_jwt_identity()) != user_id and not get_jwt().get("is_admin"):
++        return jsonify({"msg": "Non autorisé"}), 403
++
++    conn = get_db_connection()
++    cur = conn.cursor()
++    cur.execute("SELECT * FROM transactions WHERE beneficiary_id = %s", (user_id,))
++    rows = cur.fetchall()
++    cur.close()
++    conn.close()
++    return jsonify(rows), 200
+ 
+ if __name__ == '__main__':
+     app.run(host='0.0.0.0', port=5000)
+\ No newline at end of file
+-- 
+2.52.0
+

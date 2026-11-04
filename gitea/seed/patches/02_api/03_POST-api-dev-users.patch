@@ -1,0 +1,43 @@
+From ae8c856ba53698e43a03b9f0dc557f75d71d4ade Mon Sep 17 00:00:00 2001
+From: Sarah <sarah@example.fr>
+Date: Sat, 28 Feb 2026 12:02:09 +0000
+Subject: [PATCH] POST /api/dev/users
+
+---
+ app.py | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/app.py b/app.py
+index e16a7dc..3489686 100755
+--- a/app.py
++++ b/app.py
+@@ -33,7 +33,25 @@ def get_db_connection():
+ # --- ADMIN ENDPOINT WITHOUT BEING LOGGED IN (DEV) ---
+ @app.route('/api/dev/users', methods=['POST'])
+ def dev_create_user():
+-    return True
++    data = request.get_json()
++    hashed_pw = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
++    
++    conn = get_db_connection()
++    cur = conn.cursor()
++    try:
++        cur.execute(
++            "INSERT INTO users (username, password, is_admin, balance) VALUES (%s, %s, %s, %s) RETURNING id",
++            (data['username'], hashed_pw, data.get('admin', False), data.get('montant', 0))
++        )
++        new_id = cur.fetchone()['id']
++        conn.commit()
++        return jsonify({"id": new_id}), 201
++    except Exception as e:
++        conn.rollback()
++        return jsonify({"error": str(e)}), 400
++    finally:
++        cur.close()
++        conn.close()
+ 
+ # --- PROD ENDPOINTS ---
+ 
+-- 
+2.52.0
+

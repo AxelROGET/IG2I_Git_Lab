@@ -1,0 +1,59 @@
+From 91064d241933319ce832f8f9e9df4455b88e313e Mon Sep 17 00:00:00 2001
+From: Sarah <sarah@example.fr>
+Date: Sat, 28 Feb 2026 11:25:24 +0000
+Subject: [PATCH] init project
+
+---
+ readme.md | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+ create mode 100755 readme.md
+
+diff --git a/readme.md b/readme.md
+new file mode 100755
+index 0000000..92f5040
+--- /dev/null
++++ b/readme.md
+@@ -0,0 +1,39 @@
++# IG2I PINF
++
++Ce projet est une API  Git. 
++Elle permet la gestion d'utilisateurs, l'authentification par jetons et l'exécution de transactions financières entre comptes de manière atomique.
++
++---
++
++## Authentification et Rôles
++
++### Rôle Administrateur
++L'administrateur possède des privilèges étendus. Il est le seul autorisé à créer de nouveaux utilisateurs et peut consulter l'historique des transactions de n'importe quel compte du système. Son jeton JWT porte un flag spécifique permettant de contourner les restrictions de propriété.
++
++---
++
++## Endpoints de l'API
++
++### Authentification
++* **POST `/api/login`**
++    * **Paramètres** : `{ "username": "...", "password": "..." }`
++    * **Description** : Vérifie les identifiants et retourne un token JWT valable 24h en cas de succès.
++
++### Utilisateurs
++* **POST `/api/users`**
++    * **Paramètres** : `{ "username": "...", "password": "...", "admin": bool, "montant": float }`
++    * **Description** : (Admin uniquement) Crée un nouvel utilisateur. Le mot de passe est automatiquement haché avec bcrypt avant stockage.
++
++### Transactions
++* **POST `/api/transactions`**
++    * **Paramètres** : `{ "montant": float, "user_author": int, "user_beneficiary": int }`
++    * **Description** : Transfère des fonds d'un utilisateur à un autre. 
++    * **Contraintes** : L'utilisateur doit avoir un solde suffisant. L'opération est protégée par une transaction SQL (ACID). Accessible par l'auteur de la transaction ou un administrateur.
++
++* **GET `/api/transactions/author/:user_id`**
++    * **Description** : Récupère la liste des transactions initiées par l'utilisateur spécifié.
++    * **Sécurité** : Accessible seulement par l'utilisateur concerné ou un administrateur.
++
++* **GET `/api/transactions/beneficiary/:user_id`**
++    * **Description** : Récupère la liste des transactions reçues par l'utilisateur spécifié.
++    * **Sécurité** : Accessible seulement par l'utilisateur concerné ou un administrateur.
+\ No newline at end of file
+-- 
+2.52.0
+

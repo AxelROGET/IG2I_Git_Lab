@@ -1,0 +1,14 @@
+# Configuration SYSTEME de la machine du TP (/etc/gitconfig).
+# Les étudiants configurent eux-mêmes user.name et user.email (question 1).
+[alias]
+	tree = log --graph --all --decorate
+[core]
+	pager = cat
+	editor = nano
+[init]
+	defaultBranch = main
+[pull]
+	# comportement de "git pull" = fetch + merge
+	rebase = false
+[color]
+	ui = auto

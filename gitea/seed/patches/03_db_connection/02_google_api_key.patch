@@ -1,0 +1,21 @@
+From f5271cdbd543b90898d1d56a9cc9a54196a98d30 Mon Sep 17 00:00:00 2001
+From: Maxime <maxime@example.fr>
+Date: Sat, 28 Feb 2026 12:02:08 +0000
+Subject: [PATCH] Google API key
+
+---
+ .env | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/.env b/.env
+index d5ac44c..871b929 100755
+--- a/.env
++++ b/.env
+@@ -3,3 +3,4 @@ POSTGRES_HOST=db-dev
+ POSTGRES_DB=pinf_dev
+ POSTGRES_USER=pinf_dev
+ POSTGRES_PASSWORD=bwFhmNvMBhsVHWoEPovZOQFlUlanPbXgQMSIuKvI
++GOOGLE_API_TOKEN=6Ll1n2lC51NZz55HHYuazzrgAVq3JqYb7PnwPCSgdFRbFZZOZx
+-- 
+2.52.0
+

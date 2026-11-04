@@ -1,0 +1,62 @@
+From 9875aff6635f4eecbe564516c3496e1f22b1e190 Mon Sep 17 00:00:00 2001
+From: Sarah <sarah@example.fr>
+Date: Sat, 28 Feb 2026 16:15:50 +0000
+Subject: [PATCH] Add transaction
+
+---
+ app.py | 38 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 37 insertions(+), 1 deletion(-)
+
+diff --git a/app.py b/app.py
+index fb188b9..89af954 100755
+--- a/app.py
++++ b/app.py
+@@ -67,8 +67,44 @@ def create_user():
+ @app.route('/api/transactions', methods=['POST'])
+ @jwt_required()
+ def post_transaction():
+-    return True
++    current_user_id = int(get_jwt_identity())
++    claims = get_jwt()
++    data = request.get_json()
++    
++    amount = data['montant']
++    author_id = data['user_author']
++    beneficiary_id = data['user_beneficiary']
++
++    # Vérification des droits : Soit auteur, soit admin
++    if current_user_id != author_id and not claims.get("is_admin"):
++        return jsonify({"msg": "Non autorisé"}), 403
++
++    conn = get_db_connection()
++    cur = conn.cursor()
++    try:
++        # Bloc ACID : Une seule transaction SQL
++        # 1. Débit de l'auteur (la contrainte CHECK balance >= 0 en SQL assure les fonds)
++        cur.execute("UPDATE users SET balance = balance - %s WHERE id = %s RETURNING id", (amount, author_id))
++        if cur.rowcount == 0: raise Exception("Auteur introuvable ou fonds insuffisants")
++
++        # 2. Crédit du bénéficiaire
++        cur.execute("UPDATE users SET balance = balance + %s WHERE id = %s", (amount, beneficiary_id))
++        if cur.rowcount == 0: raise Exception("Bénéficiaire introuvable")
+ 
++        # 3. Enregistrement du log
++        cur.execute(
++            "INSERT INTO transactions (amount, author_id, beneficiary_id) VALUES (%s, %s, %s)",
++            (amount, author_id, beneficiary_id)
++        )
++        conn.commit()
++        return jsonify({"msg": "Transaction réussie"}), 201
++    except Exception as e:
++        conn.rollback()
++        return jsonify({"error": str(e)}), 400
++    finally:
++        cur.close()
++        conn.close()
++        
+ @app.route('/api/transactions/author/<int:user_id>', methods=['GET'])
+ @jwt_required()
+ def get_author_transactions(user_id):
+-- 
+2.52.0
+

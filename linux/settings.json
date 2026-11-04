@@ -1,0 +1,11 @@
+{
+  "security.workspace.trust.enabled": false,
+  "workbench.startupEditor": "none",
+  "telemetry.telemetryLevel": "off",
+  "git.autofetch": false,
+  "git.confirmSync": true,
+  "git.openRepositoryInParentFolders": "never",
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "files.autoSave": "afterDelay",
+  "editor.minimap.enabled": false
+}

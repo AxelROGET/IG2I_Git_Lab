@@ -1,0 +1,21 @@
+From ce907f1970980052d2457ddd46ec24faa17549cb Mon Sep 17 00:00:00 2001
+From: Pierre <pierre@example.fr>
+Date: Sat, 28 Feb 2026 12:02:08 +0000
+Subject: [PATCH] Deleting google api key
+
+---
+ .env | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/.env b/.env
+index 871b929..d5ac44c 100755
+--- a/.env
++++ b/.env
+@@ -3,4 +3,3 @@ POSTGRES_HOST=db-dev
+ POSTGRES_DB=pinf_dev
+ POSTGRES_USER=pinf_dev
+ POSTGRES_PASSWORD=bwFhmNvMBhsVHWoEPovZOQFlUlanPbXgQMSIuKvI
+-GOOGLE_API_TOKEN=6Ll1n2lC51NZz55HHYuazzrgAVq3JqYb7PnwPCSgdFRbFZZOZx
+-- 
+2.52.0
+
