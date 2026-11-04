@@ -4,7 +4,7 @@
 Prérequis : Docker (Docker Desktop sous Windows/macOS, Docker Engine sous Linux) avec Compose v2.
 
 ```bash
-docker compose up -d --build --wait      # build + démarrage ; rend la main quand tout est prêt
+docker compose up -d --build --wait     
 ```
 
 | Service | URL | Identifiants |
@@ -16,6 +16,6 @@ docker compose up -d --build --wait      # build + démarrage ; rend la main qua
 ## Réinitialiser le TP
 
 ```bash
-docker compose down -v                   # supprime conteneurs ET volumes
-docker compose up -d --wait              # repart de zéro (pas de rebuild nécessaire)
+docker compose down -v                   
+docker compose up -d --wait              
 ```
